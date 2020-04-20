@@ -1,0 +1,438 @@
+﻿<Window x:Class="PID.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:PID"
+        mc:Ignorable="d"
+        Title="PID controller simulator with DC motor - Wojciech Strzeboński" Height="1080" Width="1920"
+        WindowState="Maximized"
+        ResizeMode="NoResize">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="176"/>
+            <RowDefinition/>
+            <RowDefinition/>
+            <RowDefinition/>
+        </Grid.RowDefinitions>
+
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="440"/>
+            <ColumnDefinition/>
+            <ColumnDefinition Width="167"/>
+        </Grid.ColumnDefinitions>
+
+        <GroupBox Grid.Column="0">
+            <GroupBox.Header>
+                <TextBlock FontWeight="Bold">Simulation control</TextBlock>
+            </GroupBox.Header>
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition/>
+                    <RowDefinition/>
+                    <RowDefinition Height="35"/>
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition/>
+                    <ColumnDefinition/>
+                </Grid.ColumnDefinitions>
+
+                <Button Content="START SIMULATION" Grid.Column="0" Grid.Row="0" Margin="5" x:Name="ButtonStart" Click="ButtonStartClick"/>
+                <Button Content="STOP" Grid.Column="1" Grid.Row="0" Margin="5" x:Name="ButtonStop" Click="ButtonStopClick"/>
+                <Button Content="RESET" Grid.Column="0" Grid.Row="1" Grid.ColumnSpan="2" Margin="5" x:Name="ButtonReset" Click="ButtonResetClick"/>
+                <Button Content="Save simulation settings" Grid.Column="0" Grid.Row="2" Margin="5" x:Name="ButtonSaveSettings" Click="ButtonSaveSettingsClick"/>
+                <Button Content="Initialize charts" Grid.Row="2" Grid.Column="1" Margin="5" x:Name="ButtonChartsInitialization" Click="ButtonChartsInitializationClick"/>
+
+            </Grid>
+        </GroupBox>
+
+        <GroupBox Grid.Column="1">
+            <GroupBox.Header>
+                <TextBlock FontWeight="Bold">Simulation parameters</TextBlock>
+            </GroupBox.Header>
+            <Grid Margin="1">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="120"/>
+                    <ColumnDefinition Width="450" />
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="170"/>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="Auto"/>
+
+                </Grid.ColumnDefinitions>
+
+                
+
+                <GroupBox Grid.Column="0">
+                    <GroupBox.Header>
+                        <TextBlock FontWeight="Bold">Simulation mode</TextBlock>
+                    </GroupBox.Header>
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition/>
+                            <RowDefinition/>
+                        </Grid.RowDefinitions>
+
+                        <RadioButton Grid.Row="0" Content="Open-loop" VerticalAlignment="Center" x:Name="RadioButtonOpenLoop" Checked="RadioButtonOpenLoopCheckedEvent"/>
+                        <RadioButton Grid.Row="1" Content="Closed-loop" VerticalAlignment="Center" x:Name="RadioButtonClosedLoop" Checked="RadioButtonClosedLoopCheckedEvent"/>
+
+                    </Grid>
+                </GroupBox>
+
+                <GroupBox Grid.Column="1">
+                    <GroupBox.Header>
+                        <TextBlock FontWeight="Bold">Input signal parameters</TextBlock>
+                    </GroupBox.Header>
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="190"/>
+                            <ColumnDefinition/>
+                        </Grid.ColumnDefinitions>
+
+                        <GroupBox Grid.Column="0" Grid.Row="0" Header="Mode">
+                            <Grid>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition/>
+                                    <RowDefinition/>
+                                </Grid.RowDefinitions>
+
+                                <RadioButton Content="Manual" VerticalAlignment="Center" x:Name="RadioButtonManualControl" Checked="RadioButtonManualControlEvent"/>
+                                <RadioButton Grid.Row="1" Content="Sinusoidal" VerticalAlignment="Center" x:Name="RadioButtonSinusControl" Checked="RadioButtonSinusControlCheckedEvent"/>
+
+                            </Grid>
+                        </GroupBox>
+
+                        <GroupBox Grid.Column="1" Header="Parameters (manual mode)">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto"/>
+                                    <ColumnDefinition/>
+                                </Grid.ColumnDefinitions>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition/>
+                                    <RowDefinition/>
+                                    <RowDefinition/>
+                                </Grid.RowDefinitions>
+
+                                <Slider Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2" x:Name="Slider" Maximum="65" IsSnapToTickEnabled="True" TickFrequency="5" VerticalAlignment="Center"/>
+                                <Label Grid.Row="1" Content="Max input signal value:" VerticalAlignment="Center"/>
+                                <Label Grid.Row="2" Content="Slider tick value:" VerticalAlignment="Center"/>
+
+                                <TextBox Grid.Row="1" Grid.Column="1" Text="20" VerticalAlignment="Center" x:Name="TextBoxMaxInputValueForControl"/>
+                                <TextBox Grid.Row="2" Grid.Column="1" Text="5" VerticalAlignment="Center" x:Name="TextBoxSliderTick"/>
+
+                            </Grid>
+                        </GroupBox>
+
+
+
+                        <GroupBox Header="Parameters (sinusoidal)" Grid.Column="2">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto"/>
+                                    <ColumnDefinition/>
+                                </Grid.ColumnDefinitions>
+
+                                <Grid.RowDefinitions>
+                                    <RowDefinition/>
+                                    <RowDefinition/>
+                                    <RowDefinition/>
+                                </Grid.RowDefinitions>
+
+                                <Label Grid.Row="0" Content="Amplitude:" VerticalAlignment="Center"/>
+                                <Label Grid.Row="1" Content="Frequency:" VerticalAlignment="Center"/>
+                                <Label Grid.Row="2" Content="Mean value:" VerticalAlignment="Center"/>
+
+
+                                <TextBox Grid.Row="0" Grid.Column="1" Text="20" VerticalAlignment="Center" x:Name="TextBoxSineAmplitudeValue"/>
+                                <TextBox Grid.Row="1" Grid.Column="1" Text="0.5" VerticalAlignment="Center" x:Name="TextBoxSineFrequencyValue"/>
+                                <TextBox Grid.Row="2" Grid.Column="1" Text="10" VerticalAlignment="Center" x:Name="TextBoxSineMeanValue"/>
+
+                            </Grid>
+                        </GroupBox>
+                    </Grid>
+                </GroupBox>
+
+                <Grid Grid.Column="2">
+                    <Grid.RowDefinitions>
+                        <RowDefinition/>
+                        <RowDefinition/>
+                    </Grid.RowDefinitions>
+
+                    <GroupBox>
+                        <GroupBox.Header>
+                            <TextBlock FontWeight="Bold">Load moment (value)</TextBlock>
+                        </GroupBox.Header>
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition/>
+                                <RowDefinition/>
+                            </Grid.RowDefinitions>
+
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition/>
+                                <ColumnDefinition/>
+                            </Grid.ColumnDefinitions>
+
+                            <Slider Grid.ColumnSpan="2" x:Name="SliderLoadTorqueValue" IsSnapToTickEnabled="True" TickFrequency="1" VerticalAlignment="Center"/>
+                            <TextBox Grid.Row="1" x:Name="TextBoxLoadMomentMaxValue" Text="10" VerticalAlignment="Center" ToolTip="Maximum load torque value [N*m]"/>
+                            <TextBox Grid.Row="1" Grid.Column="1" x:Name="TextBoxLoadMomentSliderTick" Text="1" VerticalAlignment="Center" ToolTip="Tick of the load torque slider value"/>
+                        </Grid>
+                    </GroupBox>
+                    
+                    <GroupBox Grid.Row="1">
+                        <GroupBox.Header>
+                            <TextBlock FontWeight="Bold">Output signal (the chart)</TextBlock>
+                        </GroupBox.Header>
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition/>
+                                <RowDefinition/>
+                            </Grid.RowDefinitions>
+
+                            <Label Content="Maximum value [rad/s]" VerticalAlignment="Center"/>
+                            <TextBox Grid.Row="1" Text="35" VerticalAlignment="Center" HorizontalContentAlignment="Center" x:Name="TextBoxOutputChartMaxValue"/>
+                        </Grid>
+                    </GroupBox>
+
+                </Grid>
+
+                <GroupBox Grid.Column="3">
+                    <GroupBox.Header>
+                        <TextBlock FontWeight="Bold">PID controller parameters</TextBlock>
+                    </GroupBox.Header>
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition/>
+                            <RowDefinition/>
+                            <RowDefinition/>
+                            <RowDefinition/>
+                        </Grid.RowDefinitions>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition/>
+                        </Grid.ColumnDefinitions>
+                        <Label Grid.Row="0" Grid.Column="0" Content="Kp gain value:" VerticalAlignment="Center"/>
+                        <Label Grid.Row="1" Grid.Column="0" Content="Ti gain value:" VerticalAlignment="Center"/>
+                        <Label Grid.Row="2" Grid.Column="0" Content="Td gain value:" VerticalAlignment="Center"/>
+                        <Label Grid.Row="3" Grid.Column="0" Content="Max/min output: [V] " VerticalAlignment="Center"/>
+
+
+                        <TextBox Grid.Row="0" Grid.Column="1" Text="4" VerticalAlignment="Center" x:Name="TextBox_PID_P_Value"/>
+                        <TextBox Grid.Row="1" Grid.Column="1" Text="0" VerticalAlignment="Center" x:Name="TextBox_PID_I_Value"/>
+                        <TextBox Grid.Row="2" Grid.Column="1" Text="0" VerticalAlignment="Center" x:Name="TextBox_PID_D_Value"/>
+                        <TextBox Grid.Row="3" Grid.Column="1" Text="25" VerticalAlignment="Center" x:Name="TextBox_PID_U_Max_Value"/>
+                    </Grid>
+                </GroupBox>
+
+                <GroupBox Grid.Column="4">
+                    <GroupBox.Header>
+                        <TextBlock FontWeight="Bold">Engine parameters</TextBlock>
+                    </GroupBox.Header>
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition/>
+                            <RowDefinition/>
+                            <RowDefinition/>
+                            <RowDefinition/>
+                            <RowDefinition/>
+                        </Grid.RowDefinitions>
+
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="70"/>
+                        </Grid.ColumnDefinitions>
+
+                        <Label Grid.Row="0" Grid.Column="0" Content="Armature resistance:"/>
+                        <Label Grid.Row="1" Grid.Column="0" Content="Armature inductance:"/>
+                        <Label Grid.Row="2" Grid.Column="0" Content="Rotor inertia:"/>
+                        <Label Grid.Row="3" Grid.Column="0" Content="Electric constant:"/>
+                        <Label Grid.Row="4" Grid.Column="0" Content="Mechanical constant:"/>
+
+                        <TextBox Grid.Row="0" Grid.Column="1" Text="22.581" VerticalAlignment="Center" x:Name="TextBoxEngineRValue"  ToolTip="Electric motor winding resistance [Ω]"/>
+                        <TextBox Grid.Row="1" Grid.Column="1" Text="0.0281" VerticalAlignment="Center" x:Name="TextBoxEngineLValue" ToolTip="Electric motor winding inductance [H]"/>
+                        <TextBox Grid.Row="2" Grid.Column="1" Text="0.0221" VerticalAlignment="Center" x:Name="TextBoxEngineJValue" ToolTip="Moment of inertia reduced to the rotor shaft [kg*m^2]"/>
+                        <TextBox Grid.Row="3" Grid.Column="1" Text="1.25" VerticalAlignment="Center" x:Name="TextBoxEngineKeValue" ToolTip="Electric constant of the electric motor [V*s/rad]"/>
+                        <TextBox Grid.Row="4" Grid.Column="1" Text="1.25" VerticalAlignment="Center" x:Name="TextBoxEngineKmValue" ToolTip="Mechanical constant of the electric motor [N*m/A]"/>
+                    </Grid>
+                </GroupBox>
+
+                <GroupBox Grid.Column="5">
+                    <GroupBox.Header>
+                        <TextBlock FontWeight="Bold">Signal values</TextBlock>
+                    </GroupBox.Header>
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition/>
+                            <RowDefinition/>
+                            <RowDefinition/>
+                            <RowDefinition/>
+                            <RowDefinition/>
+                        </Grid.RowDefinitions>
+
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="70"/>
+                        </Grid.ColumnDefinitions>
+
+                        <Label Grid.Row="0" Grid.Column="0" Content="Input signal:" VerticalAlignment="Center"/>
+                        <Label Grid.Row="1" Grid.Column="0" Content="Output signal:" VerticalAlignment="Center"/>
+                        <Label Grid.Row="2" Grid.Column="0" Content="PID controller signal:" VerticalAlignment="Center"/>
+                        <Label Grid.Row="3" Grid.Column="0" Content="Error:" VerticalAlignment="Center"/>
+                        <Label Grid.Row="4" Grid.Column="0" Content="Load torque signal:" VerticalAlignment="Center"/>
+
+                        <Label Grid.Row="0" Grid.Column="1" Content="0.000" VerticalAlignment="Center" x:Name="TextBlockInputSignalValue"/>
+                        <Label Grid.Row="1" Grid.Column="1" Content="0.000" VerticalAlignment="Center" x:Name="TextBlockOutputSignalValue"/>
+                        <Label Grid.Row="2" Grid.Column="1" Content="0.000" VerticalAlignment="Center" x:Name="TextBlockPIDSignalValue"/>
+                        <Label Grid.Row="3" Grid.Column="1" Content="0.000" VerticalAlignment="Center" x:Name="TextBlockErrorSignalValue"/>
+                        <Label Grid.Row="4" Grid.Column="1" Content="0.000" VerticalAlignment="Center" x:Name="TextBlockLoadMomentSignalValue"/>
+
+                    </Grid>
+                </GroupBox>
+            </Grid>
+        </GroupBox>
+
+        <GroupBox  Grid.Column="2">
+            <GroupBox.Header>
+                <TextBlock FontWeight="Bold">Additional options</TextBlock>
+            </GroupBox.Header>
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition/>
+                    <RowDefinition/>
+                </Grid.RowDefinitions>
+
+                <Button Margin="5" Click="ButtonSaveToFileClick" x:Name="ButtonSaveToFile" Content="SAVE SIMULATION">
+                    
+                </Button>
+
+                <Button Grid.Row="1" Margin="5" x:Name="ButtonInformationAboutAuthor" Content="ABOUT PROGRAM" Click="ButtonInformationAboutAuthorClick">
+                   
+                </Button>
+            </Grid>
+        </GroupBox>
+
+        <GroupBox Header="Input signal" Grid.Row="1" x:Name="GroupBoxInputSignal" Grid.ColumnSpan="3">
+            <Grid x:Name="GridInputSignal">
+                <Canvas x:Name="CanvasInputSignalAxis" Width="Auto" Height="Auto" ClipToBounds="True" Margin="40,30,30,30">
+                    <Canvas.LayoutTransform>
+                        <ScaleTransform ScaleY="-1"/>
+                    </Canvas.LayoutTransform>
+                    <Line X1="{Binding Canvas1CoefficientAxisY[0], Mode=TwoWay}" Y1="{Binding Canvas1CoefficientAxisY[1], Mode=TwoWay}" X2="{Binding Canvas1CoefficientAxisY[2], Mode=TwoWay}" Y2="{Binding Canvas1CoefficientAxisY[3], Mode=TwoWay}" Stroke="Black" StrokeThickness="1"/>
+                    <Line X1="{Binding Canvas1CoefficientAxisX[0], Mode=TwoWay}" Y1="{Binding Canvas1CoefficientAxisX[1], Mode=TwoWay}" X2="{Binding Canvas1CoefficientAxisX[2], Mode=TwoWay}" Y2="{Binding Canvas1CoefficientAxisX[3], Mode=TwoWay}" Stroke="Black" StrokeThickness="1"/>
+
+                    <Line X1="{Binding SecondaryAxisCoefficient1[0], Mode=TwoWay}" Y1="{Binding SecondaryAxisCoefficient1[1], Mode=TwoWay}" X2="{Binding SecondaryAxisCoefficient1[2], Mode=TwoWay}" Y2="{Binding SecondaryAxisCoefficient1[3], Mode=TwoWay}" Stroke="Silver" StrokeThickness="1"/>
+                    <Line X1="{Binding SecondaryAxisCoefficient2[0], Mode=TwoWay}" Y1="{Binding SecondaryAxisCoefficient2[1], Mode=TwoWay}" X2="{Binding SecondaryAxisCoefficient2[2], Mode=TwoWay}" Y2="{Binding SecondaryAxisCoefficient2[3], Mode=TwoWay}" Stroke="Silver" StrokeThickness="1"/>
+                    <Line X1="{Binding SecondaryAxisCoefficient3[0], Mode=TwoWay}" Y1="{Binding SecondaryAxisCoefficient3[1], Mode=TwoWay}" X2="{Binding SecondaryAxisCoefficient3[2], Mode=TwoWay}" Y2="{Binding SecondaryAxisCoefficient3[3], Mode=TwoWay}" Stroke="Silver" StrokeThickness="1"/>
+                    <Line X1="{Binding SecondaryAxisCoefficient4[0], Mode=TwoWay}" Y1="{Binding SecondaryAxisCoefficient4[1], Mode=TwoWay}" X2="{Binding SecondaryAxisCoefficient4[2], Mode=TwoWay}" Y2="{Binding SecondaryAxisCoefficient4[3], Mode=TwoWay}" Stroke="Silver" StrokeThickness="1"/>
+
+                    <Line X1="{Binding AxisMaxValueCoefficient[0], Mode=TwoWay}" Y1="{Binding AxisMaxValueCoefficient[1], Mode=TwoWay}" X2="{Binding AxisMaxValueCoefficient[2], Mode=TwoWay}" Y2="{Binding AxisMaxValueCoefficient[3], Mode=TwoWay}" Stroke="Silver" StrokeThickness="1"/>
+                    <Line X1="{Binding Axis34ValueCoefficient[0], Mode=TwoWay}" Y1="{Binding Axis34ValueCoefficient[1], Mode=TwoWay}" X2="{Binding Axis34ValueCoefficient[2], Mode=TwoWay}" Y2="{Binding Axis34ValueCoefficient[3], Mode=TwoWay}" Stroke="Silver" StrokeThickness="1"/>
+                    <Line X1="{Binding Axis12ValueCoefficient[0], Mode=TwoWay}" Y1="{Binding Axis12ValueCoefficient[1], Mode=TwoWay}" X2="{Binding Axis12ValueCoefficient[2], Mode=TwoWay}" Y2="{Binding Axis12ValueCoefficient[3], Mode=TwoWay}" Stroke="Silver" StrokeThickness="1"/>
+                    <Line X1="{Binding Axis14ValueCoefficient[0], Mode=TwoWay}" Y1="{Binding Axis14ValueCoefficient[1], Mode=TwoWay}" X2="{Binding Axis14ValueCoefficient[2], Mode=TwoWay}" Y2="{Binding Axis14ValueCoefficient[3], Mode=TwoWay}" Stroke="Silver" StrokeThickness="1"/>
+
+                    <Polyline x:Name="PolylineInputSignal">
+                    </Polyline>
+                </Canvas>
+                
+                <Label Content="0.0" HorizontalAlignment="Left" Margin="10,0,0,0" VerticalAlignment="Bottom" Width="45" x:Name="LabelInputSignalTime0" HorizontalContentAlignment="Right"/>
+                <Label Content="1.0" HorizontalAlignment="Left" Margin="373,0,0,0" VerticalAlignment="Bottom" Width="45" x:Name="LabelInputSignalTime1" HorizontalContentAlignment="Right"/>
+                <Label Content="2.0" HorizontalAlignment="Left" Margin="740,0,0,0" VerticalAlignment="Bottom" Width="45" x:Name="LabelInputSignalTime2" HorizontalContentAlignment="Right"/>
+                <Label Content="3.0" HorizontalAlignment="Left" Margin="1106,0,0,0" VerticalAlignment="Bottom" Width="45" x:Name="LabelInputSignalTime3" HorizontalContentAlignment="Right"/>
+                <Label Content="4.0" HorizontalAlignment="Left" Margin="1473,0,0,0" VerticalAlignment="Bottom" Width="46" x:Name="LabelInputSignalTime4" HorizontalContentAlignment="Right"/>
+                <Label Content="5.0" HorizontalAlignment="Left" Margin="1841,0,0,0" VerticalAlignment="Bottom" Width="45" x:Name="LabelInputSignalTimeEnd" HorizontalContentAlignment="Right"/>
+
+                <Label Content="t[s]" HorizontalAlignment="Center" VerticalAlignment="Bottom" Width="30"/>
+
+
+                <Label Content="0" HorizontalAlignment="Left" Margin="-6,18,0,0" VerticalAlignment="Top" HorizontalContentAlignment="Right" Width="45" x:Name="LabelMaxValueDisplayedOnInputChart"/>
+                <Label Content="0" HorizontalAlignment="Left" Margin="-6,70,0,0" VerticalAlignment="Top" HorizontalContentAlignment="Right" Width="45" x:Name="Label34ValueDisplayedOnInputChart"/>
+                <Label Content="0" HorizontalAlignment="Left" Margin="-6,122,0,0" VerticalAlignment="Top" HorizontalContentAlignment="Right" Width="45" x:Name="LabelHalfValueDisplayedOnInputChart"/>
+                <Label Content="0" HorizontalAlignment="Left" Margin="-6,176,0,0" VerticalAlignment="Top" HorizontalContentAlignment="Right" Width="44" x:Name="Label14ValueDisplayedOnInputChart"/>
+                <Label Content="0" HorizontalAlignment="Left" Margin="-6,227,0,0" VerticalAlignment="Top" HorizontalContentAlignment="Right" Width="45" x:Name="Label0ValueDisplayedOnInputChart"/>
+
+            </Grid>
+        </GroupBox>
+
+        <GroupBox Header="PID controller signal [V]" Grid.Row="2" Grid.ColumnSpan="3">
+            <Grid x:Name="GridPIDSignal">
+                <Canvas x:Name="CanvasPIDSignalAxis" Width="Auto" Height="Auto" ClipToBounds="True" Margin="40, 30, 30, 30">
+                    <Canvas.LayoutTransform>
+                        <ScaleTransform ScaleY="-1"/>
+                    </Canvas.LayoutTransform>
+                    <Line X1="{Binding Canvas2CoefficientAxisY[0], Mode=TwoWay}" Y1="{Binding Canvas2CoefficientAxisY[1], Mode=TwoWay}" X2="{Binding Canvas2CoefficientAxisY[2], Mode=TwoWay}" Y2="{Binding Canvas2CoefficientAxisY[3], Mode=TwoWay}" Stroke="Black" StrokeThickness="1"/>
+                    <Line X1="{Binding Canvas2CoefficientAxisX[0], Mode=TwoWay}" Y1="{Binding Canvas2CoefficientAxisX[1], Mode=TwoWay}" X2="{Binding Canvas2CoefficientAxisX[2], Mode=TwoWay}" Y2="{Binding Canvas2CoefficientAxisX[3], Mode=TwoWay}" Stroke="Black" StrokeThickness="1"/>
+
+                    <Line X1="{Binding SecondaryAxisCoefficient1[0], Mode=TwoWay}" Y1="{Binding SecondaryAxisCoefficient1[1], Mode=TwoWay}" X2="{Binding SecondaryAxisCoefficient1[2], Mode=TwoWay}" Y2="{Binding SecondaryAxisCoefficient1[3], Mode=TwoWay}" Stroke="Silver" StrokeThickness="1"/>
+                    <Line X1="{Binding SecondaryAxisCoefficient2[0], Mode=TwoWay}" Y1="{Binding SecondaryAxisCoefficient2[1], Mode=TwoWay}" X2="{Binding SecondaryAxisCoefficient2[2], Mode=TwoWay}" Y2="{Binding SecondaryAxisCoefficient2[3], Mode=TwoWay}" Stroke="Silver" StrokeThickness="1"/>
+                    <Line X1="{Binding SecondaryAxisCoefficient3[0], Mode=TwoWay}" Y1="{Binding SecondaryAxisCoefficient3[1], Mode=TwoWay}" X2="{Binding SecondaryAxisCoefficient3[2], Mode=TwoWay}" Y2="{Binding SecondaryAxisCoefficient3[3], Mode=TwoWay}" Stroke="Silver" StrokeThickness="1"/>
+                    <Line X1="{Binding SecondaryAxisCoefficient4[0], Mode=TwoWay}" Y1="{Binding SecondaryAxisCoefficient4[1], Mode=TwoWay}" X2="{Binding SecondaryAxisCoefficient4[2], Mode=TwoWay}" Y2="{Binding SecondaryAxisCoefficient4[3], Mode=TwoWay}" Stroke="Silver" StrokeThickness="1"/>
+
+                    <Line X1="{Binding AxisMaxValueCoefficient[0], Mode=TwoWay}" Y1="{Binding AxisMaxValueCoefficient[1], Mode=TwoWay}" X2="{Binding AxisMaxValueCoefficient[2], Mode=TwoWay}" Y2="{Binding AxisMaxValueCoefficient[3], Mode=TwoWay}" Stroke="Silver" StrokeThickness="1"/>
+                    <Line X1="{Binding Axis34ValueCoefficient[0], Mode=TwoWay}" Y1="{Binding Axis34ValueCoefficient[1], Mode=TwoWay}" X2="{Binding Axis34ValueCoefficient[2], Mode=TwoWay}" Y2="{Binding Axis34ValueCoefficient[3], Mode=TwoWay}" Stroke="Silver" StrokeThickness="1"/>
+                    <Line X1="{Binding Axis12ValueCoefficient[0], Mode=TwoWay}" Y1="{Binding Axis12ValueCoefficient[1], Mode=TwoWay}" X2="{Binding Axis12ValueCoefficient[2], Mode=TwoWay}" Y2="{Binding Axis12ValueCoefficient[3], Mode=TwoWay}" Stroke="Silver" StrokeThickness="1"/>
+                    <Line X1="{Binding Axis14ValueCoefficient[0], Mode=TwoWay}" Y1="{Binding Axis14ValueCoefficient[1], Mode=TwoWay}" X2="{Binding Axis14ValueCoefficient[2], Mode=TwoWay}" Y2="{Binding Axis14ValueCoefficient[3], Mode=TwoWay}" Stroke="Silver" StrokeThickness="1"/>
+                    <Polyline x:Name="PolylinePIDSignal">
+                    </Polyline>
+                </Canvas>
+                <Label Content="0.0" HorizontalAlignment="Left" Margin="10,0,0,0" VerticalAlignment="Bottom" Width="44" x:Name="LabelPIDSignalTime0" HorizontalContentAlignment="Right" />
+                <Label Content="1.0" HorizontalAlignment="Left" Margin="373,0,0,0" VerticalAlignment="Bottom" Width="45" x:Name="LabelPIDSignalTime1" HorizontalContentAlignment="Right"/>
+                <Label Content="2.0" HorizontalAlignment="Left" Margin="740,0,0,0" VerticalAlignment="Bottom" Width="45" x:Name="LabelPIDSignalTime2" HorizontalContentAlignment="Right"/>
+                <Label Content="3.0" HorizontalAlignment="Left" Margin="1106,0,0,0" VerticalAlignment="Bottom" Width="45" x:Name="LabelPIDSignalTime3" HorizontalContentAlignment="Right"/>
+                <Label Content="4.0" HorizontalAlignment="Left" Margin="1473,0,0,0" VerticalAlignment="Bottom" Width="44" x:Name="LabelPIDSignalTime4" HorizontalContentAlignment="Right"/>
+                <Label Content="5.0" HorizontalAlignment="Left" Margin="1841,0,0,0" VerticalAlignment="Bottom" Width="45" x:Name="LabelPIDSignalTimeEnd" HorizontalContentAlignment="Right"/>
+
+
+                <Label Content="0" HorizontalAlignment="Left" Margin="-6,18,0,0" VerticalAlignment="Top" HorizontalContentAlignment="Right" Width="45" x:Name="LabelMaxValueDisplayedOnPIDChart"/>
+                <Label Content="0" HorizontalAlignment="Left" Margin="-6,70,0,0" VerticalAlignment="Top" HorizontalContentAlignment="Right" Width="45" x:Name="LabelHalfValueDisplayedOnPIDChart"/>
+                <Label Content="0" HorizontalAlignment="Left" Margin="-6,122,0,0" VerticalAlignment="Top" HorizontalContentAlignment="Right" Width="45"/>
+                <Label Content="0" HorizontalAlignment="Left" Margin="-6,176,0,0" VerticalAlignment="Top" HorizontalContentAlignment="Right" Width="44" x:Name="LabelMinusHalfValueDisplayedOnPIDChart"/>
+                <Label Content="0" HorizontalAlignment="Left" Margin="-6,227,0,0" VerticalAlignment="Top" HorizontalContentAlignment="Right" Width="45" x:Name="LabelMinValueDisplayedOnPIDChart"/>
+
+            </Grid>
+        </GroupBox>
+
+        <GroupBox Header="Output signal [rad/s]" Grid.Row="3" Grid.ColumnSpan="3">
+            <Grid x:Name="GridOutputSignal">
+                <Canvas x:Name="CanvasOutputSignalAxis" Width="Auto" Height="Auto" ClipToBounds="True" Margin="40, 30, 30, 30">
+                    <Canvas.LayoutTransform>
+                        <ScaleTransform ScaleY="-1"/>
+                    </Canvas.LayoutTransform>
+                    <Line X1="{Binding Canvas2CoefficientAxisY[0], Mode=TwoWay}" Y1="{Binding Canvas2CoefficientAxisY[1], Mode=TwoWay}" X2="{Binding Canvas2CoefficientAxisY[2], Mode=TwoWay}" Y2="{Binding Canvas2CoefficientAxisY[3], Mode=TwoWay}" Stroke="Black" StrokeThickness="1"/>
+                    <Line X1="{Binding Canvas2CoefficientAxisX[0], Mode=TwoWay}" Y1="{Binding Canvas2CoefficientAxisX[1], Mode=TwoWay}" X2="{Binding Canvas2CoefficientAxisX[2], Mode=TwoWay}" Y2="{Binding Canvas2CoefficientAxisX[3], Mode=TwoWay}" Stroke="Black" StrokeThickness="1"/>
+
+                    <Line X1="{Binding SecondaryAxisCoefficient1[0], Mode=TwoWay}" Y1="{Binding SecondaryAxisCoefficient1[1], Mode=TwoWay}" X2="{Binding SecondaryAxisCoefficient1[2], Mode=TwoWay}" Y2="{Binding SecondaryAxisCoefficient1[3], Mode=TwoWay}" Stroke="Silver" StrokeThickness="1"/>
+                    <Line X1="{Binding SecondaryAxisCoefficient2[0], Mode=TwoWay}" Y1="{Binding SecondaryAxisCoefficient2[1], Mode=TwoWay}" X2="{Binding SecondaryAxisCoefficient2[2], Mode=TwoWay}" Y2="{Binding SecondaryAxisCoefficient2[3], Mode=TwoWay}" Stroke="Silver" StrokeThickness="1"/>
+                    <Line X1="{Binding SecondaryAxisCoefficient3[0], Mode=TwoWay}" Y1="{Binding SecondaryAxisCoefficient3[1], Mode=TwoWay}" X2="{Binding SecondaryAxisCoefficient3[2], Mode=TwoWay}" Y2="{Binding SecondaryAxisCoefficient3[3], Mode=TwoWay}" Stroke="Silver" StrokeThickness="1"/>
+                    <Line X1="{Binding SecondaryAxisCoefficient4[0], Mode=TwoWay}" Y1="{Binding SecondaryAxisCoefficient4[1], Mode=TwoWay}" X2="{Binding SecondaryAxisCoefficient4[2], Mode=TwoWay}" Y2="{Binding SecondaryAxisCoefficient4[3], Mode=TwoWay}" Stroke="Silver" StrokeThickness="1"/>
+
+                    <Line X1="{Binding AxisMaxValueCoefficient[0], Mode=TwoWay}" Y1="{Binding AxisMaxValueCoefficient[1], Mode=TwoWay}" X2="{Binding AxisMaxValueCoefficient[2], Mode=TwoWay}" Y2="{Binding AxisMaxValueCoefficient[3], Mode=TwoWay}" Stroke="Silver" StrokeThickness="1"/>
+                    <Line X1="{Binding Axis34ValueCoefficient[0], Mode=TwoWay}" Y1="{Binding Axis34ValueCoefficient[1], Mode=TwoWay}" X2="{Binding Axis34ValueCoefficient[2], Mode=TwoWay}" Y2="{Binding Axis34ValueCoefficient[3], Mode=TwoWay}" Stroke="Silver" StrokeThickness="1"/>
+                    <Line X1="{Binding Axis12ValueCoefficient[0], Mode=TwoWay}" Y1="{Binding Axis12ValueCoefficient[1], Mode=TwoWay}" X2="{Binding Axis12ValueCoefficient[2], Mode=TwoWay}" Y2="{Binding Axis12ValueCoefficient[3], Mode=TwoWay}" Stroke="Silver" StrokeThickness="1"/>
+                    <Line X1="{Binding Axis14ValueCoefficient[0], Mode=TwoWay}" Y1="{Binding Axis14ValueCoefficient[1], Mode=TwoWay}" X2="{Binding Axis14ValueCoefficient[2], Mode=TwoWay}" Y2="{Binding Axis14ValueCoefficient[3], Mode=TwoWay}" Stroke="Silver" StrokeThickness="1"/>
+                    <Polyline x:Name="PolylineOutputSignal">
+                    </Polyline>
+                </Canvas>
+
+                <Label Content="0.0" HorizontalAlignment="Left" Margin="10,0,0,0" VerticalAlignment="Bottom" Width="45" x:Name="LabelOutputSignalTime0" HorizontalContentAlignment="Right" />
+                <Label Content="1.0" HorizontalAlignment="Left" Margin="373,0,0,0" VerticalAlignment="Bottom" Width="45" x:Name="LabelOutputSignalTime1" HorizontalContentAlignment="Right"/>
+                <Label Content="2.0" HorizontalAlignment="Left" Margin="740,0,0,0" VerticalAlignment="Bottom" Width="45" x:Name="LabelOutputSignalTime2" HorizontalContentAlignment="Right"/>
+                <Label Content="3.0" HorizontalAlignment="Left" Margin="1106,0,0,0" VerticalAlignment="Bottom" Width="45" x:Name="LabelOutputSignalTime3" HorizontalContentAlignment="Right"/>
+                <Label Content="4.0" HorizontalAlignment="Left" Margin="1473,0,0,0" VerticalAlignment="Bottom" Width="45" x:Name="LabelOutputSignalTime4" HorizontalContentAlignment="Right"/>
+                <Label Content="5.0" HorizontalAlignment="Left" Margin="1841,0,0,0" VerticalAlignment="Bottom" Width="45" x:Name="LabelOutputSignalTimeEnd" HorizontalContentAlignment="Right"/>
+                
+                
+
+                <Label Content="t[s]" HorizontalAlignment="Center" VerticalAlignment="Bottom" Width="30"/>
+
+                <Label Content="0" HorizontalAlignment="Left" Margin="-6,18,0,0" VerticalAlignment="Top" HorizontalContentAlignment="Right" Width="45" x:Name="LabelMaxValueDisplayedOnOutputChart"/>
+                <Label Content="0" HorizontalAlignment="Left" Margin="-6,70,0,0" VerticalAlignment="Top" HorizontalContentAlignment="Right" Width="45" x:Name="Label23ValueDisplayedOnInputChart"/>
+                <Label Content="0" HorizontalAlignment="Left" Margin="-6,122,0,0" VerticalAlignment="Top" HorizontalContentAlignment="Right" Width="45" x:Name="Label13ValueDisplayedOnInputChart"/>
+                <Label Content="0" HorizontalAlignment="Left" Margin="-6,176,0,0" VerticalAlignment="Top" HorizontalContentAlignment="Right" Width="44"/>
+                <Label Content="0" HorizontalAlignment="Left" Margin="-6,227,0,0" VerticalAlignment="Top" HorizontalContentAlignment="Right" Width="45"  x:Name="LabelMinus13ValueDisplayedOnInputChart"/>
+            
+            </Grid>
+        </GroupBox>
+    </Grid>
+</Window>
