@@ -19,7 +19,7 @@ In the closed-loop control the PID controller is used. It allows you to obtain d
 * Waveforms of individual signal (input signal, controller output, output signal) are drawn on charts
 
 ## What has been done?
-I wanted to code everything from scratch, that's why I didn't use any external plugins. I coded the entire logic for displaying charts correctly, depending on the user parameters entered. That's why whole GUI are written in the "clear" WPF. The DC motor was modeled using differential equations. The 4th order Runge-Kutta method was appied to solve the system of differential equations. The PID controller also was coded using equation, that describe it.
+I wanted to code everything from scratch, that's why I didn't use any external plugins. I coded the entire logic for displaying charts correctly, depending on the user parameters entered. That's why whole GUI are written in the "clear" WPF. The DC motor was modeled using differential equations. The 4th order Runge-Kutta method was appied to solve the system of differential equations. The PID controller also was coded using equation, that describe it. For now, the application runs only in 1920 x 1080 px resolution.
 
 ## Built with
 In this project I used Visual Studio 2019 and C# version 4.7.2, GUI was written using WPF framework. I also used Microsecond timer class that was written by ken.loveday ([source](https://www.codeproject.com/Articles/98346/Microsecond-and-Millisecond-NET-Timer)).
